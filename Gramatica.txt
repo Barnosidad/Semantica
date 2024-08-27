@@ -1,0 +1,37 @@
+SNT = Producciones = Invocar el metodo
+ST = Tokens (Contenido | Clasificioacnion) = Invocar match
+
+Programa  -> Librerias? Variables? Main
+Librerias -> using ListaLibrerias; Librerias?
+Variables -> tipo_dato Lista_identificadores; Variables?
+ListaLibrerias -> identificador (.ListaLibrerias)?
+ListaIdentificadores -> identificador (,ListaIdentificadores)?
+BloqueInstrucciones -> { listaIntrucciones? }
+ListaInstrucciones -> Instruccion ListaInstrucciones?
+
+Instruccion -> Console | If | While | do | For | Asignacion
+Asignacion -> Identificador = Expresion;
+
+If -> if (Condicion) bloqueInstrucciones | instruccion
+     (else bloqueInstrucciones | instruccion)?
+
+Condicion -> Expresion operadorRelacional Expresion
+
+While -> while(Condicion) bloqueInstrucciones | instruccion
+Do -> do 
+        bloqueInstrucciones | intruccion 
+      while(Condicion);
+For -> for(Asignacion Condicion; Incremento) 
+       BloqueInstrucciones | Intruccion 
+Incremento -> Identificador ++ | --
+
+Console -> Console.(WriteLine|Write) (cadena); |
+           Console.(Read | ReadLine) ();
+
+Main      -> static void Main(string[] args) BloqueInstrucciones 
+
+Expresion -> Termino MasTermino
+MasTermino -> (OperadorTermino Termino)?
+Termino -> Factor PorFactor
+PorFactor -> (OperadorFactor Factor)?
+Factor -> numero | identificador | (Expresion)

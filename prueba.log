@@ -1,0 +1,7 @@
+Analizador Lexico
+Autor: Gonzalez Hernandez Diego
+1234 = Numero
++ = OpTermino
+radio = Identificador
+; = FinSentencia
+using = Identificador
