@@ -53,7 +53,7 @@ namespace Sintaxis_1
         };
         public Lexico() // Constructor
         {
-            linea = 0;
+            linea = 1;
             log = new StreamWriter("prueba.log");
             log.AutoFlush = true;
             asm = new StreamWriter("prueba.asm");
@@ -70,7 +70,7 @@ namespace Sintaxis_1
         }
         public Lexico(string nombre) // Constructor
         {
-            linea = 0;
+            linea = 1;
             log = new StreamWriter(Path.GetFileNameWithoutExtension(nombre) + ".log");
             log.AutoFlush = true;
             asm = new StreamWriter(Path.GetFileNameWithoutExtension(nombre) + ".asm");
@@ -103,6 +103,7 @@ namespace Sintaxis_1
             }
             else if (c == '\n')
             {
+                linea++;
                 return 23;
             }
             else if (char.IsWhiteSpace(c))

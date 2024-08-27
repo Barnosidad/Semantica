@@ -1,15 +1,14 @@
-1234+radio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-static void Main(string[] args)
-{
-    char e;
-    float pi;
-    int rex;
+char e;
+float pi;
+int rex;
 
+static void Main(String[] args)
+{
     Console.Write("Proyecto 6");
     Console.WriteLine(" - ITQ");
     e = Console.ReadLine();

@@ -5,7 +5,7 @@ using Sintaxis_1;
 namespace Semantica
 {
     /*
-        ! 1. Colocar el numero de linea en errores lexicos y sintacticos
+        ? 1. Colocar el numero de linea en errores lexicos y sintacticos
         ! 2. Cambiar la clase token por atributos publicos utilizando el Get y el Set
         ! 3. Cambiar los constructores de la clase lexico usando parametros por default
     */
@@ -41,7 +41,13 @@ namespace Semantica
         // Variables -> tipo_dato Lista_identificadores; Variables?
         private void Variables()
         {
-            
+            match(Tipos.TipoDato);
+            Lista_Identificadores();
+            match(Tipos.FinSentencia);
+            if(getClasificacion() == Tipos.TipoDato)
+            {
+                Variables();
+            }
         }
         // ListaLibrerias -> identificador (.ListaLibrerias)?
         public void ListaLibrerias()
@@ -54,8 +60,25 @@ namespace Semantica
             }
         }
         // ListaIdentificadores -> identificador (,ListaIdentificadores)?
+        private void Lista_Identificadores()
+        {
+            match(Tipos.Identificador);
+            if(getContenido() == ",")
+            {
+                match(",");
+                Lista_Identificadores();
+            }
+        }
         // BloqueInstrucciones -> { listaIntrucciones? }
+        private void BloqueInstrucciones()
+        {
+
+        }
         // ListaInstrucciones -> Instruccion ListaInstrucciones?
+        private void ListaInstrucciones()
+        {
+            
+        }
         // Instruccion -> Console | If | While | do | For | Asignacion
         // Asignacion -> Identificador = Expresion;
         /* If -> if (Condicion) bloqueInstrucciones | instruccion
@@ -80,11 +103,12 @@ namespace Semantica
             match("static");
             match("void");
             match("Main");
-            match("[");
+            match("(");
             match("String");
             match("[");
             match("]");
             match("args");
+            match(")");
             BloqueInstrucciones();
         }
         // Expresion -> Termino MasTermino
