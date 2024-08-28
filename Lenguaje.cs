@@ -22,8 +22,14 @@ namespace Semantica
         // Programa  -> Librerias? Variables? Main
         public void Programa()
         {
-            Librerias();
-            Variables();
+            if (Contenido == "using")
+            {
+                Librerias();
+            }
+            if(Clasificacion == Tipos.TipoDato)
+            {
+                Variables();
+            }
             Main();
         }
         // Librerias -> using ListaLibrerias; Librerias?
@@ -169,7 +175,7 @@ namespace Semantica
         // Factor -> numero | identificador | (Expresion)
         private void Factor()
         {
-            
+
         }
     }
 }
