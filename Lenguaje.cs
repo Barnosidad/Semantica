@@ -77,39 +77,110 @@ namespace Semantica
         // BloqueInstrucciones -> { listaIntrucciones? }
         private void BloqueInstrucciones()
         {
-
+            match(Tipos.Inicio);
+            if(Clasificacion != Tipos.Fin)
+            {
+                ListaInstrucciones();
+            }
+            match(Tipos.Fin);
         }
         // ListaInstrucciones -> Instruccion ListaInstrucciones?
         private void ListaInstrucciones()
         {
-            
+            Instruccion();
+            if(Clasificacion != Tipos.Fin)
+            {
+                ListaInstrucciones();
+            }
         }
         // Instruccion -> Console | If | While | do | For | Asignacion
         private void Instruccion()
         {
-
+            if(Contenido == "console")
+            {
+                Console();
+            }
+            else if(Contenido == "if")
+            {
+                If();
+            }
+            else if(Contenido == "while")
+            {
+                While();
+            }
+            else if(Contenido == "do")
+            {
+                Do();
+            }
+            else if(Contenido == "for")
+            {
+                For();
+            }
+            else
+            {
+                Asignacion();
+            }
         }
         // Asignacion -> Identificador = Expresion;
         private void Asignacion()
         {
-
+            match(Tipos.Identificador);
+            match(Tipos.Asignacion);
+            Expresion();
+            match(Tipos.FinSentencia);
         }
         /* If -> if (Condicion) bloqueInstrucciones | instruccion
             (else bloqueInstrucciones | instruccion)?
         */
         private void If()
         {
-
+            match("if");
+            match("(");
+            Condicion();
+            match(")");
+            if(Clasificacion == Tipos.Inicio)
+            {
+                BloqueInstrucciones();
+            }
+            else 
+            {
+                Instruccion();
+            }
+            if(Contenido == "else")
+            {
+                match("else");
+                if(Clasificacion == Tipos.Inicio)
+                {
+                    BloqueInstrucciones();
+                }
+                else 
+                {
+                    Instruccion();
+                }
+            }
         }
         //Condicion -> Expresion operadorRelacional Expresion
         private void Condicion()
         {
-
+            Expresion();
+            match(Tipos.OpRelacional);
+            Expresion();
         }
         // While -> while(Condicion) bloqueInstrucciones | instruccion
         private void While()
         {
-
+            match("while");
+            match("(");
+            Condicion();
+            match(")");
+            if(Clasificacion == Tipos.Inicio)
+            {
+                BloqueInstrucciones();
+            }
+            else
+            {
+                Instruccion();
+            }
         }
         /* Do -> do 
                 bloqueInstrucciones | intruccion 
@@ -117,26 +188,87 @@ namespace Semantica
         */
         private void Do()
         {
-
+            match("do");
+            if(Clasificacion == Tipos.Inicio)
+            {
+                BloqueInstrucciones();
+            }
+            else
+            {
+                Instruccion();
+            }
+            match("while");
+            match("(");
+            Condicion();
+            match(")");
+            match(Tipos.FinSentencia);
         }
-        /* For -> for(Asignacion Condicion; Incremento) 
+        /* For -> for(Asignacion; Condicion; Incremento) 
             BloqueInstrucciones | Intruccion
         */
         private void For()
         {
-
+            match("for");
+            match("(");
+            Asignacion();
+            match(Tipos.FinSentencia);
+            Condicion();
+            match(Tipos.FinSentencia);
+            Incremento();
+            match(")");
+            if(Clasificacion == Tipos.Inicio)
+            {
+                BloqueInstrucciones();
+            }
+            else
+            {
+                Instruccion();
+            }
         }
         // Incremento -> Identificador ++ | --
         private void Incremento()
         {
-
+            match(Tipos.Identificador);
+            if(Contenido == "++")
+            {
+                match("++");
+            }
+            else
+            {
+                match("--");
+            }
         }
-        /* Console -> Console.(WriteLine|Write) (cadena); |
+        /* Console -> Console.(WriteLine|Write) (cadena?); |
                 Console.(Read | ReadLine) ();
         */
         private void Console()
         {
-
+            match("Console");
+            match(".");
+            if(Contenido == "WriteLine" || Contenido == "Write")
+            {
+                match(Contenido);
+                match("(");
+                if(Clasificacion == Tipos.Cadena)
+                {
+                    match(Tipos.Cadena);
+                }
+                match(")");
+            }
+            else
+            {
+                if(Contenido == "ReadLine")
+                {
+                    match("ReadLine");
+                }
+                else
+                {
+                    match("Read");
+                }
+                match("(");
+                match(")");
+            }
+            match(Tipos.FinSentencia);
         }
         // Main      -> static void Main(string[] args) BloqueInstrucciones
         private void Main()
