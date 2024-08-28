@@ -6,7 +6,7 @@ namespace Semantica
 {
     /*
         ? 1. Colocar el numero de linea en errores lexicos y sintacticos
-        ! 2. Cambiar la clase token por atributos publicos utilizando el Get y el Set
+        ? 2. Cambiar la clase token por atributos publicos utilizando el Get y el Set
         ! 3. Cambiar los constructores de la clase lexico usando parametros por default
     */
     public class Lenguaje : Sintaxis
@@ -33,7 +33,7 @@ namespace Semantica
             match("using");
             ListaLibrerias();
             match(Tipos.FinSentencia);
-            if(getContenido() == "using")
+            if(Contenido == "using")
             {
                 Librerias();
             }
@@ -44,7 +44,7 @@ namespace Semantica
             match(Tipos.TipoDato);
             Lista_Identificadores();
             match(Tipos.FinSentencia);
-            if(getClasificacion() == Tipos.TipoDato)
+            if(Clasificacion == Tipos.TipoDato)
             {
                 Variables();
             }
@@ -53,7 +53,7 @@ namespace Semantica
         public void ListaLibrerias()
         {
             match(Tipos.Identificador);
-            if(getContenido() == ".")
+            if(Contenido == ".")
             {
                 match(".");
                 ListaLibrerias();
@@ -63,7 +63,7 @@ namespace Semantica
         private void Lista_Identificadores()
         {
             match(Tipos.Identificador);
-            if(getContenido() == ",")
+            if(Contenido == ",")
             {
                 match(",");
                 Lista_Identificadores();

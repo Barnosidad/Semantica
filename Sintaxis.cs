@@ -17,7 +17,7 @@ namespace Sintaxis_1
         }
         public void match(string espera)
         {
-            if (getContenido() == espera)
+            if (Contenido == espera)
             {
                 nextToken();
             }
@@ -28,7 +28,7 @@ namespace Sintaxis_1
         }
         public void match(Tipos espera)
         {
-            if (getClasificacion() == espera)
+            if (Clasificacion == espera)
             {
                 nextToken();
             }

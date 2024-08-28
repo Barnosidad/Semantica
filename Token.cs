@@ -20,21 +20,15 @@ namespace Sintaxis_1
         {
             contenido = "";
         }
-        public void setContenido(string contenido)
+        public string Contenido
         {
-            this.contenido = contenido;
+            get => contenido;
+            set => contenido = value;
         }
-        public void setClasificacion(Tipos clasificacion)
+        public Tipos Clasificacion
         {
-            this.clasificacion = clasificacion;
-        }
-        public string getContenido()
-        {
-            return this.contenido;
-        }
-        public Tipos getClasificacion()
-        {
-            return this.clasificacion;
+            get => clasificacion;
+            set => clasificacion = value;
         }
     }
 }
