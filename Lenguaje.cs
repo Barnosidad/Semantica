@@ -7,7 +7,7 @@ namespace Semantica
     /*
         ? 1. Colocar el numero de linea en errores lexicos y sintacticos
         ? 2. Cambiar la clase token por atributos publicos utilizando el Get y el Set
-        ! 3. Cambiar los constructores de la clase lexico usando parametros por default
+        ? 3. Cambiar los constructores de la clase lexico usando parametros por default
     */
     public class Lenguaje : Sintaxis
     {
@@ -15,7 +15,6 @@ namespace Semantica
         {
             
         }
-        
         public Lenguaje(String nombre) : base (nombre)
         {
 
@@ -80,23 +79,59 @@ namespace Semantica
             
         }
         // Instruccion -> Console | If | While | do | For | Asignacion
+        private void Instruccion()
+        {
+
+        }
         // Asignacion -> Identificador = Expresion;
+        private void Asignacion()
+        {
+
+        }
         /* If -> if (Condicion) bloqueInstrucciones | instruccion
             (else bloqueInstrucciones | instruccion)?
         */
+        private void If()
+        {
+
+        }
         //Condicion -> Expresion operadorRelacional Expresion
+        private void Condicion()
+        {
+
+        }
         // While -> while(Condicion) bloqueInstrucciones | instruccion
+        private void While()
+        {
+
+        }
         /* Do -> do 
                 bloqueInstrucciones | intruccion 
             while(Condicion);
         */
+        private void Do()
+        {
+
+        }
         /* For -> for(Asignacion Condicion; Incremento) 
             BloqueInstrucciones | Intruccion
         */
+        private void For()
+        {
+
+        }
         // Incremento -> Identificador ++ | --
+        private void Incremento()
+        {
+
+        }
         /* Console -> Console.(WriteLine|Write) (cadena); |
                 Console.(Read | ReadLine) ();
         */
+        private void Console()
+        {
+
+        }
         // Main      -> static void Main(string[] args) BloqueInstrucciones
         private void Main()
         {
@@ -112,9 +147,29 @@ namespace Semantica
             BloqueInstrucciones();
         }
         // Expresion -> Termino MasTermino
+        private void Expresion()
+        {
+
+        }
         // MasTermino -> (OperadorTermino Termino)?
+        private void MasTermino()
+        {
+
+        }
         // Termino -> Factor PorFactor
+        private void Termino()
+        {
+
+        }
         // PorFactor -> (OperadorFactor Factor)?
+        private void PorFactor()
+        {
+            
+        }
         // Factor -> numero | identificador | (Expresion)
+        private void Factor()
+        {
+            
+        }
     }
 }

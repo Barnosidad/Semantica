@@ -105,7 +105,6 @@ namespace Sintaxis_1
             else if (char.IsLetter(c))
             {
                 return 1;
-
             }
             else if (char.IsDigit(c))
             {
