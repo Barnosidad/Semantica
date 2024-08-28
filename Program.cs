@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Semantica;
 
-namespace Sintaxis_1
+namespace Semantica
 {
     class Program
     {

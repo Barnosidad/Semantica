@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace Sintaxis_1
+namespace Semantica
 {
     public class Lexico : Token, IDisposable
     {
