@@ -286,27 +286,50 @@ namespace Semantica
         // Expresion -> Termino MasTermino
         private void Expresion()
         {
-
+            Termino();
+            MasTermino();
         }
         // MasTermino -> (OperadorTermino Termino)?
         private void MasTermino()
         {
-
+            if(Clasificacion == Tipos.OpTermino)
+            {
+                match(Tipos.OpTermino);
+                Termino();
+            }
         }
         // Termino -> Factor PorFactor
         private void Termino()
         {
-
+            Factor();
+            PorFactor();
         }
         // PorFactor -> (OperadorFactor Factor)?
         private void PorFactor()
         {
-            
+            if(Clasificacion == Tipos.OpFactor)
+            {
+                match(Tipos.OpFactor);
+                Factor();
+            }
         }
         // Factor -> numero | identificador | (Expresion)
         private void Factor()
         {
-
+            if(Clasificacion == Tipos.Numero)
+            {
+                match(Tipos.Numero);
+            }
+            else if(Clasificacion == Tipos.Identificador)
+            {
+                match(Tipos.Identificador);
+            }
+            else
+            {
+                match("(");
+                Expresion();
+                match(")");
+            }
         }
     }
 }
