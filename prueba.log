@@ -1,6 +1,6 @@
 Analizador Lexico
 Autor: Gonzalez Hernandez Diego
-Fecha: 27/8/2024
+Fecha: 29/8/2024
 using = Identificador
 System = Identificador
 ; = FinSentencia
@@ -23,15 +23,6 @@ Threading = Identificador
 . = Caracter
 Tasks = Identificador
 ; = FinSentencia
-char = TipoDato
-e = Identificador
-; = FinSentencia
-float = TipoDato
-pi = Identificador
-; = FinSentencia
-int = TipoDato
-rex = Identificador
-; = FinSentencia
 static = Identificador
 void = Identificador
 Main = Identificador
@@ -42,3 +33,53 @@ String = Identificador
 args = Identificador
 ) = Caracter
 { = Inicio
+char = TipoDato
+e = Identificador
+; = FinSentencia
+float = TipoDato
+pi = Identificador
+; = FinSentencia
+int = TipoDato
+rex = Identificador
+; = FinSentencia
+Console = Identificador
+. = Caracter
+Write = Identificador
+( = Caracter
+"Proyecto 6" = Cadena
+) = Caracter
+; = FinSentencia
+Console = Identificador
+. = Caracter
+WriteLine = Identificador
+( = Caracter
+" - ITQ" = Cadena
+) = Caracter
+; = FinSentencia
+Console = Identificador
+. = Caracter
+ReadLine = Identificador
+( = Caracter
+) = Caracter
+; = FinSentencia
+pi = Identificador
+= = Asignacion
+( = Caracter
+3 = Numero
++ = OpTermino
+5 = Numero
+) = Caracter
+* = OpFactor
+8 = Numero
+- = OpTermino
+( = Caracter
+10 = Numero
+- = OpTermino
+e = Identificador
+) = Caracter
+/ = OpFactor
+2 = Numero
+; = FinSentencia
+pi = Identificador
+++ = IncTermino
+Error: Sintaxis: se espera un Asignacion, 15

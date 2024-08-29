@@ -18,16 +18,12 @@ namespace Semantica
         {
 
         }
-        // Programa  -> Librerias? Variables? Main
+        // Programa  -> Librerias? Main
         public void Programa()
         {
             if (Contenido == "using")
             {
                 Librerias();
-            }
-            if(Clasificacion == Tipos.TipoDato)
-            {
-                Variables();
             }
             Main();
         }
@@ -92,10 +88,10 @@ namespace Semantica
                 ListaInstrucciones();
             }
         }
-        // Instruccion -> Console | If | While | do | For | Asignacion
+        // Instruccion -> Console | If | While | do | For | Variables? | Asignacion
         private void Instruccion()
         {
-            if(Contenido == "console")
+            if(Contenido == "Console")
             {
                 Console();
             }
@@ -114,6 +110,10 @@ namespace Semantica
             else if(Contenido == "for")
             {
                 For();
+            }
+            else if(Clasificacion == Tipos.TipoDato)
+            {
+                Variables();
             }
             else
             {
