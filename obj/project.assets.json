@@ -8,19 +8,19 @@
     "net8.0": []
   },
   "packageFolders": {
-    "C:\\Users\\gh098\\.nuget\\packages\\": {}
+    "C:\\Users\\zared\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\ITQRepos\\Semantica\\Semantica.csproj",
+      "projectUniqueName": "C:\\Repositorios\\Semantica\\Semantica.csproj",
       "projectName": "Semantica",
-      "projectPath": "C:\\ITQRepos\\Semantica\\Semantica.csproj",
-      "packagesPath": "C:\\Users\\gh098\\.nuget\\packages\\",
-      "outputPath": "C:\\ITQRepos\\Semantica\\obj\\",
+      "projectPath": "C:\\Repositorios\\Semantica\\Semantica.csproj",
+      "packagesPath": "C:\\Users\\zared\\.nuget\\packages\\",
+      "outputPath": "C:\\Repositorios\\Semantica\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\gh098\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\zared\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -64,7 +64,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.201/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

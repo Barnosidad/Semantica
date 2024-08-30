@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Semantica")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f98f5d14960c1eff7094e6abce64cf9508f1fb01")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fde9bd6f4ab4e16bab7ae3dd82cf43d8f3b13389")]
 [assembly: System.Reflection.AssemblyProductAttribute("Semantica")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Semantica")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

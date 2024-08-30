@@ -10,13 +10,15 @@ namespace Semantica
     */
     public class Lenguaje : Sintaxis
     {
+        List <Variable> listaVariables;
         public Lenguaje()
         {
+            listaVariables = new List<Variable>();
             
         }
         public Lenguaje(String nombre) : base (nombre)
         {
-
+            listaVariables = new List<Variable>();
         }
         // Programa  -> Librerias? Main
         public void Programa()
@@ -41,6 +43,11 @@ namespace Semantica
         // Variables -> tipo_dato Lista_identificadores; Variables?
         private void Variables()
         {
+            Variable.TipoDato tipo = Variable.TipoDato.Char;
+            switch (Contenido())
+            {
+                
+            }
             match(Tipos.TipoDato);
             Lista_Identificadores();
             match(Tipos.FinSentencia);
