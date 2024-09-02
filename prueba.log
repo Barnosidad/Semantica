@@ -1,6 +1,6 @@
 Analizador Lexico
 Autor: Gonzalez Hernandez Diego
-Fecha: 29/8/2024
+Fecha: 2/9/2024
 using = Identificador
 System = Identificador
 ; = FinSentencia
@@ -35,51 +35,44 @@ args = Identificador
 { = Inicio
 char = TipoDato
 e = Identificador
+, = Caracter
+rsi = Identificador
+, = Caracter
+eax = Identificador
 ; = FinSentencia
 float = TipoDato
 pi = Identificador
+, = Caracter
+pito = Identificador
+, = Caracter
+puto = Identificador
 ; = FinSentencia
 int = TipoDato
 rex = Identificador
+, = Caracter
+zared = Identificador
+, = Caracter
+joto = Identificador
+, = Caracter
+a = Identificador
 ; = FinSentencia
-Console = Identificador
-. = Caracter
-Write = Identificador
-( = Caracter
-"Proyecto 6" = Cadena
-) = Caracter
-; = FinSentencia
-Console = Identificador
-. = Caracter
-WriteLine = Identificador
-( = Caracter
-" - ITQ" = Cadena
-) = Caracter
-; = FinSentencia
-Console = Identificador
-. = Caracter
-ReadLine = Identificador
-( = Caracter
-) = Caracter
-; = FinSentencia
-pi = Identificador
+a = Identificador
 = = Asignacion
-( = Caracter
-3 = Numero
-+ = OpTermino
-5 = Numero
-) = Caracter
-* = OpFactor
-8 = Numero
-- = OpTermino
-( = Caracter
-10 = Numero
-- = OpTermino
-e = Identificador
-) = Caracter
-/ = OpFactor
-2 = Numero
+80 = Numero
 ; = FinSentencia
-pi = Identificador
-++ = IncTermino
-Error: Sintaxis: se espera un Asignacion, 15
+int = TipoDato
+i = Identificador
+; = FinSentencia
+} = Fin
+￿ = Caracter
+e (Char) 0
+rsi (Char) 0
+eax (Char) 0
+pi (Float) 0
+pito (Float) 0
+puto (Float) 0
+rex (Int) 0
+zared (Int) 0
+joto (Int) 0
+a (Int) 0
+i (Int) 0

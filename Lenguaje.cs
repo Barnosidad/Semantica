@@ -10,7 +10,7 @@ namespace Semantica
     */
     public class Lenguaje : Sintaxis
     {
-        List <Variable> listaVariables;
+        private List <Variable> listaVariables;
         public Lenguaje()
         {
             listaVariables = new List<Variable>();
@@ -28,6 +28,7 @@ namespace Semantica
                 Librerias();
             }
             Main();
+            imprimeVariables();
         }
         // Librerias -> using ListaLibrerias; Librerias?
         private void Librerias()
@@ -40,16 +41,22 @@ namespace Semantica
                 Librerias();
             }
         }
+        Variable.TipoDato Tipo(string TipoDato)
+        {
+            Variable.TipoDato tipo = Variable.TipoDato.Char;
+            switch(TipoDato)
+            {
+                case "int" : tipo = Variable.TipoDato.Int; break;
+                case "float" : tipo = Variable.TipoDato.Float; break;
+            }
+            return tipo;
+        }
         // Variables -> tipo_dato Lista_identificadores; Variables?
         private void Variables()
         {
-            Variable.TipoDato tipo = Variable.TipoDato.Char;
-            switch (Contenido())
-            {
-                
-            }
+            Variable.TipoDato tipo = Tipo(Contenido);
             match(Tipos.TipoDato);
-            Lista_Identificadores();
+            Lista_Identificadores(tipo);
             match(Tipos.FinSentencia);
             if(Clasificacion == Tipos.TipoDato)
             {
@@ -66,14 +73,22 @@ namespace Semantica
                 ListaLibrerias();
             }
         }
-        // ListaIdentificadores -> identificador (,ListaIdentificadores)?
-        private void Lista_Identificadores()
+        private void imprimeVariables()
         {
+            foreach(Variable v in listaVariables)
+            {
+                log.WriteLine(v.Nombre + " (" + v.Tipo + ") " + v.Valor);
+            }
+        }
+        // ListaIdentificadores -> identificador (,ListaIdentificadores)?
+        private void Lista_Identificadores(Variable.TipoDato t)
+        {
+            listaVariables.Add(new Variable(Contenido,t));
             match(Tipos.Identificador);
             if(Contenido == ",")
             {
                 match(",");
-                Lista_Identificadores();
+                Lista_Identificadores(t);
             }
         }
         // BloqueInstrucciones -> { listaIntrucciones? }

@@ -21,21 +21,20 @@ namespace Semantica
             this.tipo = tipo;
             this.valor = 0;
         }
-        public void setValor(float valor)
+        public float Valor
         {
-            this.valor = valor;
+            get => valor;
+            set => valor = value;
         }
-        public string getNombre()
+        public string Nombre
         {
-            return this.nombre;
+            get => nombre;
+            set => nombre = value;
         }
-        public TipoDato getTipo()
+        public TipoDato Tipo
         {
-            return this.tipo;
-        }
-        public float getValor()
-        {
-            return this.valor;
+            get => tipo;
+            set => tipo = value;
         }
     }
 }
