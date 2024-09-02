@@ -8,6 +8,6 @@ static void Main(String[] args)
     char e, rsi, eax;
     float pi, alpha, theta;
     int rex, ip, sp, a;
-    a = 80;
+    a = (int) (3+5)*8-(10-4)/2; // Casteo
     int i;
 }

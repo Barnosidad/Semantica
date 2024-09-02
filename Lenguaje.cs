@@ -349,6 +349,13 @@ namespace Semantica
             else
             {
                 match("(");
+                // Casteo a nivel sintactico
+                if(Clasificacion == Tipos.TipoDato)
+                {
+                    match(Tipos.TipoDato);
+                    match(")");
+                    match("(");
+                }
                 Expresion();
                 match(")");
             }
