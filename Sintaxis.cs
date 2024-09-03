@@ -7,11 +7,11 @@ namespace Semantica
 {
     public class Sintaxis : Lexico
     {
-        public Sintaxis()
+        public Sintaxis(string nombre) : base(nombre)
         {
             nextToken();
         }
-        public Sintaxis(string nombre) : base(nombre)
+        public Sintaxis() : base()
         {
             nextToken();
         }

@@ -73,10 +73,7 @@ namespace Semantica
             }
             archivo = new StreamReader(nombre);
         }
-        public Lexico() : this(nombre:"prueba.cpp") // Constructor
-        {
-            
-        }
+        public Lexico() : this(nombre:"prueba.cpp") {} // Constructor
         public void Dispose() // Destructor
         {
             archivo.Close();

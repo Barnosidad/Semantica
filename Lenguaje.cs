@@ -7,18 +7,24 @@ namespace Semantica
         ? 1. Colocar el numero de linea en errores lexicos y sintacticos
         ? 2. Cambiar la clase token por atributos publicos utilizando el Get y el Set
         ? 3. Cambiar los constructores de la clase lexico usando parametros por default
+        ? Error semantico al tener valores diferentes
+        ? Busca y cambia valores de variables, castea o suelta errores
+        ? Buscar tipos de datos o si es posible la asignacion
     */
     public class Lenguaje : Sintaxis
     {
         private List <Variable> listaVariables;
-        public Lenguaje()
-        {
-            listaVariables = new List<Variable>();
-            
-        }
+        private Stack <float> s;
+
         public Lenguaje(String nombre) : base (nombre)
         {
             listaVariables = new List<Variable>();
+            s = new Stack<float>();
+        }
+        public Lenguaje() : base()
+        {
+            listaVariables = new List<Variable>();
+            s = new Stack<float>();            
         }
         // Programa  -> Librerias? Main
         public void Programa()
@@ -145,10 +151,13 @@ namespace Semantica
         // Asignacion -> Identificador = Expresion;
         private void Asignacion()
         {
+            string variable = Contenido;
             match(Tipos.Identificador);
             match(Tipos.Asignacion);
             Expresion();
             match(Tipos.FinSentencia);
+            imprimeStack();
+            log.WriteLine(variable + " = " + s.Pop());
         }
         /* If -> if (Condicion) bloqueInstrucciones | instruccion
             (else bloqueInstrucciones | instruccion)?
@@ -316,8 +325,16 @@ namespace Semantica
         {
             if(Clasificacion == Tipos.OpTermino)
             {
+                string operador = Contenido;
                 match(Tipos.OpTermino);
                 Termino();
+                float R2 = s.Pop();
+                float R1 = s.Pop();
+                switch(operador)
+                {
+                    case "+" : s.Push(R1 + R2); break;
+                    case "-" : s.Push(R1 - R2); break;
+                }
             }
         }
         // Termino -> Factor PorFactor
@@ -331,15 +348,34 @@ namespace Semantica
         {
             if(Clasificacion == Tipos.OpFactor)
             {
+                string operador = Contenido;
                 match(Tipos.OpFactor);
                 Factor();
+                float R2 = s.Pop();
+                float R1 = s.Pop();
+                switch(operador)
+                {
+                    case "*" : s.Push(R2 * R1); break;
+                    case "/" : s.Push(R1 / R2); break;
+                    case "%" : s.Push(R1 % R2); break;
+                }
             }
+        }
+        private void imprimeStack()
+        {
+            log.WriteLine("Stack: ");
+            foreach(float e in s.Reverse())
+            {
+                log.Write(e + " ");
+            }
+            log.WriteLine();
         }
         // Factor -> numero | identificador | (Expresion)
         private void Factor()
         {
             if(Clasificacion == Tipos.Numero)
             {
+                s.Push(float.Parse(Contenido));
                 match(Tipos.Numero);
             }
             else if(Clasificacion == Tipos.Identificador)
