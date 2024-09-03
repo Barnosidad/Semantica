@@ -1,5 +1,6 @@
 Analizador Lexico
 Autor: Gonzalez Hernandez Diego
+Fecha: 3/9/2024
 using = Identificador
 System = Identificador
 ; = FinSentencia
@@ -22,15 +23,6 @@ Threading = Identificador
 . = Caracter
 Tasks = Identificador
 ; = FinSentencia
-char = TipoDato
-e = Identificador
-; = FinSentencia
-float = TipoDato
-pi = Identificador
-; = FinSentencia
-int = TipoDato
-rex = Identificador
-; = FinSentencia
 static = Identificador
 void = Identificador
 Main = Identificador
@@ -41,3 +33,62 @@ String = Identificador
 args = Identificador
 ) = Caracter
 { = Inicio
+char = TipoDato
+e = Identificador
+, = Caracter
+rsi = Identificador
+, = Caracter
+eax = Identificador
+; = FinSentencia
+float = TipoDato
+pi = Identificador
+, = Caracter
+alpha = Identificador
+, = Caracter
+theta = Identificador
+; = FinSentencia
+int = TipoDato
+rex = Identificador
+, = Caracter
+ip = Identificador
+, = Caracter
+sp = Identificador
+, = Caracter
+a = Identificador
+; = FinSentencia
+a = Identificador
+= = Asignacion
+( = Caracter
+int = TipoDato
+) = Caracter
+( = Caracter
+3 = Numero
++ = OpTermino
+5 = Numero
+) = Caracter
+* = OpFactor
+8 = Numero
+- = OpTermino
+( = Caracter
+10 = Numero
+- = OpTermino
+4 = Numero
+) = Caracter
+/ = OpFactor
+2 = Numero
+; = FinSentencia
+} = Fin
+Stack: 
+61 
+a = 61
+￿ = Caracter
+e (Char) 0
+rsi (Char) 0
+eax (Char) 0
+pi (Float) 0
+alpha (Float) 0
+theta (Float) 0
+rex (Int) 0
+ip (Int) 0
+sp (Int) 0
+a (Int) 0

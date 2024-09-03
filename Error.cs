@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Sintaxis_1
+namespace Semantica
 {
     //Requerimiento: Número de linea donde se encuentra el error
     public class Error : Exception

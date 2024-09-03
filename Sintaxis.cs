@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Sintaxis_1
+namespace Semantica
 {
     public class Sintaxis : Lexico
     {
-        public Sintaxis()
+        public Sintaxis(string nombre) : base(nombre)
         {
             nextToken();
         }
-        public Sintaxis(string nombre) : base(nombre)
+        public Sintaxis() : base()
         {
             nextToken();
         }
         public void match(string espera)
         {
-            if (getContenido() == espera)
+            if (Contenido == espera)
             {
                 nextToken();
             }
@@ -28,7 +28,7 @@ namespace Sintaxis_1
         }
         public void match(Tipos espera)
         {
-            if (getClasificacion() == espera)
+            if (Clasificacion == espera)
             {
                 nextToken();
             }

@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Semantica;
 
-namespace Sintaxis_1
+namespace Semantica
 {
     class Program
     {
@@ -12,7 +11,7 @@ namespace Sintaxis_1
         {
             try
             {
-                using (Lenguaje L = new Lenguaje("prueba.cpp"))
+                using (Lenguaje L = new Lenguaje())
                 {
                     L.Programa();
                 }
