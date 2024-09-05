@@ -60,6 +60,7 @@ namespace Semantica
             asm.AutoFlush = true;
             log.WriteLine("Analizador Lexico");
             log.WriteLine("Autor: Gonzalez Hernandez Diego");
+            log.WriteLine("Autor: Rosas Jimenez Zared Isaac");
             log.WriteLine("Fecha: " + DateTime.Now.Day + "/" + DateTime.Now.Month + "/" + DateTime.Now.Year);
             asm.WriteLine("; Autor: Gonzalez Hernandez Diego");
 

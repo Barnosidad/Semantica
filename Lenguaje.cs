@@ -10,13 +10,18 @@ namespace Semantica
         ? Error semantico al tener valores diferentes
         ? Busca y cambia valores de variables, castea o suelta errores
         ? Buscar tipos de datos o si es posible la asignacion
+        ! 5. Asignacion -> Id = .Expresion; 1 solo esta opcion se evalua semanticamente
+        !     Id -> ++; | Id -> --;| Id -> +=Expresion; | Id -> -=Expresion; 
+        !     Id -> *= Expresion; | Id -> /=Expresion; | Id %=Expresion;
+
+        
     */
     public class Lenguaje : Sintaxis
     {
-        private List <Variable> listaVariables;
-        private Stack <float> s;
+        private List<Variable> listaVariables;
+        private Stack<float> s;
 
-        public Lenguaje(String nombre) : base (nombre)
+        public Lenguaje(String nombre) : base(nombre)
         {
             listaVariables = new List<Variable>();
             s = new Stack<float>();
@@ -24,7 +29,7 @@ namespace Semantica
         public Lenguaje() : base()
         {
             listaVariables = new List<Variable>();
-            s = new Stack<float>();            
+            s = new Stack<float>();
         }
         // Programa  -> Librerias? Main
         public void Programa()
@@ -42,7 +47,7 @@ namespace Semantica
             match("using");
             ListaLibrerias();
             match(Tipos.FinSentencia);
-            if(Contenido == "using")
+            if (Contenido == "using")
             {
                 Librerias();
             }
@@ -50,12 +55,16 @@ namespace Semantica
         Variable.TipoDato Tipo(string TipoDato)
         {
             Variable.TipoDato tipo = Variable.TipoDato.Char;
-            switch(TipoDato)
+            switch (TipoDato)
             {
-                case "int" : tipo = Variable.TipoDato.Int; break;
-                case "float" : tipo = Variable.TipoDato.Float; break;
+                case "int": tipo = Variable.TipoDato.Int; break;
+                case "float": tipo = Variable.TipoDato.Float; break;
             }
             return tipo;
+        }
+        private bool ValidarInt(int valor, int maximo)
+        {
+            return valor >= 65535;
         }
         // Variables -> tipo_dato Lista_identificadores; Variables?
         private void Variables()
@@ -64,7 +73,7 @@ namespace Semantica
             match(Tipos.TipoDato);
             Lista_Identificadores(tipo);
             match(Tipos.FinSentencia);
-            if(Clasificacion == Tipos.TipoDato)
+            if (Clasificacion == Tipos.TipoDato)
             {
                 Variables();
             }
@@ -73,7 +82,7 @@ namespace Semantica
         public void ListaLibrerias()
         {
             match(Tipos.Identificador);
-            if(Contenido == ".")
+            if (Contenido == ".")
             {
                 match(".");
                 ListaLibrerias();
@@ -81,7 +90,7 @@ namespace Semantica
         }
         private void imprimeVariables()
         {
-            foreach(Variable v in listaVariables)
+            foreach (Variable v in listaVariables)
             {
                 log.WriteLine(v.Nombre + " (" + v.Tipo + ") " + v.Valor);
             }
@@ -89,9 +98,9 @@ namespace Semantica
         // ListaIdentificadores -> identificador (,ListaIdentificadores)?
         private void Lista_Identificadores(Variable.TipoDato t)
         {
-            listaVariables.Add(new Variable(Contenido,t));
+            listaVariables.Add(new Variable(Contenido, t));
             match(Tipos.Identificador);
-            if(Contenido == ",")
+            if (Contenido == ",")
             {
                 match(",");
                 Lista_Identificadores(t);
@@ -101,7 +110,7 @@ namespace Semantica
         private void BloqueInstrucciones()
         {
             match(Tipos.Inicio);
-            if(Clasificacion != Tipos.Fin)
+            if (Clasificacion != Tipos.Fin)
             {
                 ListaInstrucciones();
             }
@@ -111,7 +120,7 @@ namespace Semantica
         private void ListaInstrucciones()
         {
             Instruccion();
-            if(Clasificacion != Tipos.Fin)
+            if (Clasificacion != Tipos.Fin)
             {
                 ListaInstrucciones();
             }
@@ -119,27 +128,27 @@ namespace Semantica
         // Instruccion -> Console | If | While | do | For | Variables? | Asignacion
         private void Instruccion()
         {
-            if(Contenido == "Console")
+            if (Contenido == "Console")
             {
                 Console();
             }
-            else if(Contenido == "if")
+            else if (Contenido == "if")
             {
                 If();
             }
-            else if(Contenido == "while")
+            else if (Contenido == "while")
             {
                 While();
             }
-            else if(Contenido == "do")
+            else if (Contenido == "do")
             {
                 Do();
             }
-            else if(Contenido == "for")
+            else if (Contenido == "for")
             {
                 For();
             }
-            else if(Clasificacion == Tipos.TipoDato)
+            else if (Clasificacion == Tipos.TipoDato)
             {
                 Variables();
             }
@@ -148,16 +157,52 @@ namespace Semantica
                 Asignacion();
             }
         }
-        // Asignacion -> Identificador = Expresion;
+        /* Asignacion -> Identificador = Expresion;
+        ! 5. Asignacion -> Id = Expresion; 1 solo esta opcion se evalua semanticamente
+        !     Id -> ++; | Id -> --;| Id -> +=Expresion; | Id -> -=Expresion; 
+        !     Id -> *= Expresion; | Id -> /=Expresion; | Id %=Expresion;
+        */
         private void Asignacion()
         {
             string variable = Contenido;
             match(Tipos.Identificador);
-            match(Tipos.Asignacion);
-            Expresion();
+            switch (Contenido)
+            {
+                case "=":
+                    match(Tipos.Asignacion);
+                    Expresion();                                    
+                    break;
+                case "++":
+                    match(Tipos.IncTermino);
+                    break;
+                case "--":
+                    match(Tipos.IncTermino);
+                    break;
+                case "+=":
+                    match(Tipos.IncTermino);
+                    Expresion();
+                    break;
+                case "-=":
+                    match(Tipos.IncTermino);
+                    Expresion();
+                    break;
+                case "*=":
+                    match(Tipos.IncFactor);
+                    Expresion();
+                    break;
+                case "/=":
+                    match(Tipos.IncFactor);
+                    Expresion();
+                    break;
+                case "%=":
+                    match(Tipos.IncFactor);
+                    Expresion();
+                    break;
+            }
             match(Tipos.FinSentencia);
+            log.WriteLine(variable + " = " + s.Pop());   
             imprimeStack();
-            log.WriteLine(variable + " = " + s.Pop());
+            
         }
         /* If -> if (Condicion) bloqueInstrucciones | instruccion
             (else bloqueInstrucciones | instruccion)?
@@ -168,22 +213,22 @@ namespace Semantica
             match("(");
             Condicion();
             match(")");
-            if(Clasificacion == Tipos.Inicio)
+            if (Clasificacion == Tipos.Inicio)
             {
                 BloqueInstrucciones();
             }
-            else 
+            else
             {
                 Instruccion();
             }
-            if(Contenido == "else")
+            if (Contenido == "else")
             {
                 match("else");
-                if(Clasificacion == Tipos.Inicio)
+                if (Clasificacion == Tipos.Inicio)
                 {
                     BloqueInstrucciones();
                 }
-                else 
+                else
                 {
                     Instruccion();
                 }
@@ -203,7 +248,7 @@ namespace Semantica
             match("(");
             Condicion();
             match(")");
-            if(Clasificacion == Tipos.Inicio)
+            if (Clasificacion == Tipos.Inicio)
             {
                 BloqueInstrucciones();
             }
@@ -219,7 +264,7 @@ namespace Semantica
         private void Do()
         {
             match("do");
-            if(Clasificacion == Tipos.Inicio)
+            if (Clasificacion == Tipos.Inicio)
             {
                 BloqueInstrucciones();
             }
@@ -246,7 +291,7 @@ namespace Semantica
             match(Tipos.FinSentencia);
             Incremento();
             match(")");
-            if(Clasificacion == Tipos.Inicio)
+            if (Clasificacion == Tipos.Inicio)
             {
                 BloqueInstrucciones();
             }
@@ -259,7 +304,7 @@ namespace Semantica
         private void Incremento()
         {
             match(Tipos.Identificador);
-            if(Contenido == "++")
+            if (Contenido == "++")
             {
                 match("++");
             }
@@ -275,11 +320,11 @@ namespace Semantica
         {
             match("Console");
             match(".");
-            if(Contenido == "WriteLine" || Contenido == "Write")
+            if (Contenido == "WriteLine" || Contenido == "Write")
             {
                 match(Contenido);
                 match("(");
-                if(Clasificacion == Tipos.Cadena)
+                if (Clasificacion == Tipos.Cadena)
                 {
                     match(Tipos.Cadena);
                 }
@@ -287,7 +332,7 @@ namespace Semantica
             }
             else
             {
-                if(Contenido == "ReadLine")
+                if (Contenido == "ReadLine")
                 {
                     match("ReadLine");
                 }
@@ -323,17 +368,17 @@ namespace Semantica
         // MasTermino -> (OperadorTermino Termino)?
         private void MasTermino()
         {
-            if(Clasificacion == Tipos.OpTermino)
+            if (Clasificacion == Tipos.OpTermino)
             {
                 string operador = Contenido;
                 match(Tipos.OpTermino);
                 Termino();
                 float R2 = s.Pop();
                 float R1 = s.Pop();
-                switch(operador)
+                switch (operador)
                 {
-                    case "+" : s.Push(R1 + R2); break;
-                    case "-" : s.Push(R1 - R2); break;
+                    case "+": s.Push(R1 + R2); break;
+                    case "-": s.Push(R1 - R2); break;
                 }
             }
         }
@@ -346,39 +391,39 @@ namespace Semantica
         // PorFactor -> (OperadorFactor Factor)?
         private void PorFactor()
         {
-            if(Clasificacion == Tipos.OpFactor)
+            if (Clasificacion == Tipos.OpFactor)
             {
                 string operador = Contenido;
                 match(Tipos.OpFactor);
                 Factor();
                 float R2 = s.Pop();
                 float R1 = s.Pop();
-                switch(operador)
+                switch (operador)
                 {
-                    case "*" : s.Push(R2 * R1); break;
-                    case "/" : s.Push(R1 / R2); break;
-                    case "%" : s.Push(R1 % R2); break;
+                    case "*": s.Push(R2 * R1); break;
+                    case "/": s.Push(R1 / R2); break;
+                    case "%": s.Push(R1 % R2); break;
                 }
             }
         }
         private void imprimeStack()
         {
             log.WriteLine("Stack: ");
-            foreach(float e in s.Reverse())
+            foreach (float e in s.Reverse())
             {
-                log.Write(e + " ");
+                log.Write(e + " " );
             }
             log.WriteLine();
         }
         // Factor -> numero | identificador | (Expresion)
         private void Factor()
         {
-            if(Clasificacion == Tipos.Numero)
+            if (Clasificacion == Tipos.Numero)
             {
                 s.Push(float.Parse(Contenido));
                 match(Tipos.Numero);
             }
-            else if(Clasificacion == Tipos.Identificador)
+            else if (Clasificacion == Tipos.Identificador)
             {
                 match(Tipos.Identificador);
             }
@@ -386,7 +431,7 @@ namespace Semantica
             {
                 match("(");
                 // Casteo a nivel sintactico
-                if(Clasificacion == Tipos.TipoDato)
+                if (Clasificacion == Tipos.TipoDato)
                 {
                     match(Tipos.TipoDato);
                     match(")");

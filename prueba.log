@@ -1,6 +1,7 @@
 Analizador Lexico
 Autor: Gonzalez Hernandez Diego
-Fecha: 3/9/2024
+Autor: Rosas Jimenez Zared Isaac
+Fecha: 5/9/2024
 using = Identificador
 System = Identificador
 ; = FinSentencia
@@ -55,12 +56,11 @@ ip = Identificador
 sp = Identificador
 , = Caracter
 a = Identificador
+, = Caracter
+b = Identificador
 ; = FinSentencia
 a = Identificador
 = = Asignacion
-( = Caracter
-int = TipoDato
-) = Caracter
 ( = Caracter
 3 = Numero
 + = OpTermino
@@ -77,10 +77,19 @@ int = TipoDato
 / = OpFactor
 2 = Numero
 ; = FinSentencia
-} = Fin
-Stack: 
-61 
+b = Identificador
 a = 61
+Stack: 
+
+= = Asignacion
+5 = Numero
++ = OpTermino
+1 = Numero
+; = FinSentencia
+} = Fin
+b = 6
+Stack: 
+
 ￿ = Caracter
 e (Char) 0
 rsi (Char) 0
@@ -92,3 +101,4 @@ rex (Int) 0
 ip (Int) 0
 sp (Int) 0
 a (Int) 0
+b (Int) 0
