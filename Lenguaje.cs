@@ -10,6 +10,10 @@ namespace Semantica
         ? Error semantico al tener valores diferentes
         ? Busca y cambia valores de variables, castea o suelta errores
         ? Buscar tipos de datos o si es posible la asignacion
+        ? char => 0 a 255
+        ? int => 0 a 65535
+        ? float => 0 a deus
+        ? Anadir mas a expresion
     */
     public class Lenguaje : Sintaxis
     {
@@ -73,6 +77,7 @@ namespace Semantica
         public void ListaLibrerias()
         {
             match(Tipos.Identificador);
+
             if(Contenido == ".")
             {
                 match(".");
@@ -89,12 +94,19 @@ namespace Semantica
         // ListaIdentificadores -> identificador (,ListaIdentificadores)?
         private void Lista_Identificadores(Variable.TipoDato t)
         {
-            listaVariables.Add(new Variable(Contenido,t));
-            match(Tipos.Identificador);
-            if(Contenido == ",")
+            if(buscarVariable(Contenido))
             {
-                match(",");
-                Lista_Identificadores(t);
+                throw new Error("Variable repetida en la linea: " + linea, log);
+            }
+            else
+            {
+                listaVariables.Add(new Variable(Contenido,t));
+                match(Tipos.Identificador);
+                if(Contenido == ",")
+                {
+                    match(",");
+                    Lista_Identificadores(t);
+                }
             }
         }
         // BloqueInstrucciones -> { listaIntrucciones? }
@@ -148,16 +160,152 @@ namespace Semantica
                 Asignacion();
             }
         }
+        private bool rangoTipos(float valor, Variable.TipoDato tipo)
+        {
+            bool dentro;
+            switch(tipo)
+            {
+                case Variable.TipoDato.Char: 
+                if(Math.Abs(valor)<256) dentro = true;
+                else dentro = false;
+                break;
+                case Variable.TipoDato.Int:
+                    if(Math.Abs(valor)<65536) dentro = true;
+                    else dentro = false;
+                    break;
+                default:
+                    dentro = true;
+                break;
+            }
+            return dentro;
+        }
         // Asignacion -> Identificador = Expresion;
+        //            -> Identificador ++; semanticamente, solo se anade
+        //            -> Identificador --; semanticamente, solo se resta
+        //            -> Identificador +=;
+        //            -> Identificador -=; 
+        //            -> Identificador *=;
+        //            -> Identificador /=;
+        //            -> Identificador %=;
         private void Asignacion()
         {
             string variable = Contenido;
-            match(Tipos.Identificador);
-            match(Tipos.Asignacion);
-            Expresion();
-            match(Tipos.FinSentencia);
-            imprimeStack();
-            log.WriteLine(variable + " = " + s.Pop());
+            if(!buscarVariable(variable))
+            {
+                throw new Error("Variable no delcarada previamente en la linea: " + linea, log);
+            }
+            else
+            {
+                match(Tipos.Identificador);
+                string operacion = Contenido;
+                switch(operacion)
+                {
+                    case "=" :
+                        match(Tipos.Asignacion);
+                        Expresion();
+                        imprimeStack();
+                        traeVariable(variable).Valor = s.Pop();
+                        if(!rangoTipos(traeVariable(variable).Valor, traeVariable(variable).Tipo))
+                        {
+                            throw new Error("Semantico, no es posible asignar valores de ese tipo en la linea: " + linea, log);
+                        }
+                        else
+                        {
+                            log.WriteLine(traeVariable(variable).Nombre + " = " + traeVariable(variable).Valor);
+                        }
+                    break;
+                    case "++" :
+                        match(Tipos.IncTermino);
+                        traeVariable(variable).Valor++;
+                        if(!rangoTipos(traeVariable(variable).Valor, traeVariable(variable).Tipo))
+                        {
+                            throw new Error("Semantico, no es posible asignar valores de ese tipo en la linea: " + linea, log);
+                        }
+                        else
+                        {
+                            log.WriteLine(traeVariable(variable).Nombre + " = " + traeVariable(variable).Valor);
+                        }
+                    break;
+                    case "--" :
+                        match(Tipos.IncTermino);
+                        traeVariable(variable).Valor--;
+                        if(!rangoTipos(traeVariable(variable).Valor, traeVariable(variable).Tipo))
+                        {
+                            throw new Error("Semantico, no es posible asignar valores de ese tipo en la linea: " + linea, log);
+                        }
+                        else
+                        {
+                            log.WriteLine(traeVariable(variable).Nombre + " = " + traeVariable(variable).Valor);
+                        }
+                    break;
+                    case "+=" :
+                        match(Tipos.IncTermino);
+                        Expresion();
+                        traeVariable(variable).Valor+= s.Pop();
+                        if(!rangoTipos(traeVariable(variable).Valor, traeVariable(variable).Tipo))
+                        {
+                            throw new Error("Semantico, no es posible asignar valores de ese tipo en la linea: " + linea, log);
+                        }
+                        else
+                        {
+                            log.WriteLine(traeVariable(variable).Nombre + " = " + traeVariable(variable).Valor);
+                        }
+                    break;
+                    case "-=" :
+                        match(Tipos.IncTermino);
+                        Expresion();
+                        traeVariable(variable).Valor-= s.Pop();
+                        if(!rangoTipos(traeVariable(variable).Valor, traeVariable(variable).Tipo))
+                        {
+                            throw new Error("Semantico, no es posible asignar valores de ese tipo en la linea: " + linea, log);
+                        }
+                        else
+                        {
+                            log.WriteLine(traeVariable(variable).Nombre + " = " + traeVariable(variable).Valor);
+                        }
+                    break;
+                    case "*=" :
+                        match(Tipos.IncFactor);
+                        Expresion();
+                        traeVariable(variable).Valor*=s.Pop();
+                        if(!rangoTipos(traeVariable(variable).Valor, traeVariable(variable).Tipo))
+                        {
+                            throw new Error("Semantico, no es posible asignar valores de ese tipo en la linea: " + linea, log);
+                        }
+                        else
+                        {
+                            log.WriteLine(traeVariable(variable).Nombre + " = " + traeVariable(variable).Valor);
+                        }
+                    break;
+                    case "/=" :
+                        match(Tipos.IncFactor);
+                        Expresion();
+                        traeVariable(variable).Valor/=s.Pop();
+                        if(!rangoTipos(traeVariable(variable).Valor, traeVariable(variable).Tipo))
+                        {
+                            throw new Error("Semantico, no es posible asignar valores de ese tipo en la linea: " + linea, log);
+                        }
+                        else
+                        {
+                            log.WriteLine(traeVariable(variable).Nombre + " = " + traeVariable(variable).Valor);
+                        }
+                    break;
+                    case "%=" :
+                        match(Tipos.IncFactor);
+                        Expresion();
+                        traeVariable(variable).Valor%=s.Pop();
+                        if(!rangoTipos(traeVariable(variable).Valor, traeVariable(variable).Tipo))
+                        {
+                            throw new Error("Semantico, no es posible asignar valores de ese tipo en la linea: " + linea, log);
+                        }
+                        else
+                        {
+                            log.WriteLine(traeVariable(variable).Nombre + " = " + traeVariable(variable).Valor);
+                        }
+                    break;
+                }
+                match(Tipos.FinSentencia);
+            }
         }
         /* If -> if (Condicion) bloqueInstrucciones | instruccion
             (else bloqueInstrucciones | instruccion)?
@@ -395,6 +543,16 @@ namespace Semantica
                 Expresion();
                 match(")");
             }
+        }
+        // Buscar variable
+        private bool buscarVariable(string nombre)
+        {
+            return listaVariables.Exists(x => x.Nombre == nombre); 
+        }
+        private Variable traeVariable(string nombre)
+        {
+            Variable? aux;
+            return aux = listaVariables.Find(x => x.Nombre == nombre) is null ? throw new Error("No existe esa variable en la linea " + linea, log) : listaVariables.Find(x => x.Nombre == nombre);
         }
     }
 }
