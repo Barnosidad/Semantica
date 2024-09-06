@@ -1,7 +1,7 @@
 Analizador Lexico
 Autor: Gonzalez Hernandez Diego
 Autor: Rosas Jimenez Zared Isaac
-Fecha: 5/9/2024
+Fecha: 6/9/2024
 ; Autor: Rosas Jimenez Zared Isaac
 using = Identificador
 System = Identificador
@@ -58,14 +58,5 @@ sp = Identificador
 , = Caracter
 a = Identificador
 ; = FinSentencia
-e = Identificador
-= = Asignacion
-255 = Numero
-; = FinSentencia
-Stack: 
-255 
-e = 255
-e = Identificador
-++ = IncTermino
-; = FinSentencia
-Error: Semantico, no es posible asignar valores de ese tipo en la linea: 13
+zared = Identificador
+Error: Semantico, variable (zared) no delcarada previamente en la linea: 12
