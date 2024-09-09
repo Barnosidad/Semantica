@@ -124,9 +124,7 @@ namespace Semantica
         // ListaIdentificadores -> identificador (,ListaIdentificadores)?
         private void Lista_Identificadores(Variable.TipoDato t)
         {
-            AgregarVariable(Contenido,t); 
-            listaVariables.Add(new Variable(Contenido, t));
-            
+            AgregarVariable(Contenido,t);             
             match(Tipos.Identificador);
             if (Contenido == ",")
             {
@@ -231,7 +229,7 @@ namespace Semantica
             }
             match(Tipos.FinSentencia);
             
-            log.WriteLine(variable + " = " + s.Pop());   
+            log.WriteLine(variable + " = " + s.Peek());   
             imprimeStack();
             
         }
