@@ -10,6 +10,9 @@ namespace Semantica
         ? Error semantico al tener valores diferentes
         ? Busca y cambia valores de variables, castea o suelta errores
         ? Buscar tipos de datos o si es posible la asignacion
+        ? char => 0 a 255
+        ? int => 0 a 65535
+        ? float => 0 a deus
         ! 5. Asignacion -> Id = .Expresion; 1 solo esta opcion se evalua semanticamente
         !     Id -> ++; | Id -> --;| Id -> +=Expresion; | Id -> -=Expresion; 
         !     Id -> *= Expresion; | Id -> /=Expresion; | Id %=Expresion;
@@ -52,6 +55,7 @@ namespace Semantica
                 Librerias();
             }
         }
+
         Variable.TipoDato Tipo(string TipoDato)
         {
             Variable.TipoDato tipo = Variable.TipoDato.Char;
@@ -62,10 +66,31 @@ namespace Semantica
             }
             return tipo;
         }
-        private bool ValidarInt(int valor, int maximo)
+
+       private bool VariableExiste(string nombre)
+    {
+        foreach (Variable v in listaVariables)
         {
-            return valor >= 65535;
+            if (v.Nombre == nombre)
+            {
+                return true;
+            }
         }
+        return false; 
+    }
+
+    private void AgregarVariable(string nombre, Variable.TipoDato tipo)
+    {
+        if (!VariableExiste(nombre))
+        {
+            listaVariables.Add(new Variable(nombre, tipo));
+        }
+        else
+        {
+            System.Console.WriteLine("Error: La variable "+nombre+" esta declarada varias veces.");   
+        }
+    }
+
         // Variables -> tipo_dato Lista_identificadores; Variables?
         private void Variables()
         {
@@ -78,6 +103,7 @@ namespace Semantica
                 Variables();
             }
         }
+        
         // ListaLibrerias -> identificador (.ListaLibrerias)?
         public void ListaLibrerias()
         {
@@ -98,7 +124,9 @@ namespace Semantica
         // ListaIdentificadores -> identificador (,ListaIdentificadores)?
         private void Lista_Identificadores(Variable.TipoDato t)
         {
+            AgregarVariable(Contenido,t); 
             listaVariables.Add(new Variable(Contenido, t));
+            
             match(Tipos.Identificador);
             if (Contenido == ",")
             {
@@ -125,6 +153,7 @@ namespace Semantica
                 ListaInstrucciones();
             }
         }
+
         // Instruccion -> Console | If | While | do | For | Variables? | Asignacion
         private void Instruccion()
         {
@@ -164,6 +193,7 @@ namespace Semantica
         */
         private void Asignacion()
         {
+
             string variable = Contenido;
             match(Tipos.Identificador);
             switch (Contenido)
@@ -200,6 +230,7 @@ namespace Semantica
                     break;
             }
             match(Tipos.FinSentencia);
+            
             log.WriteLine(variable + " = " + s.Pop());   
             imprimeStack();
             
