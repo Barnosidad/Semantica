@@ -9,10 +9,9 @@ static void Main(String[] args)
     char e, rsi, eax;
     float pi, alpha, theta;
     int rex, ip, sp, a;
-    zared = gei;
     rex = 65535;
+    rex = 70000;
     e = 255;
-    e++;
     e -= 200; // 55
     e += 5; // 60
     e *= 2; // 120
