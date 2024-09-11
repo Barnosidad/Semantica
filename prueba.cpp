@@ -10,7 +10,6 @@ static void Main(String[] args)
     float pi, alpha, theta;
     int rex, ip, sp, a;
     rex = 65535;
-    rex = 70000;
     e = 255;
     e -= 200; // 55
     e += 5; // 60

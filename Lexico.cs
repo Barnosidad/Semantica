@@ -51,7 +51,7 @@ namespace Semantica
             {F,F, 32, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}
 
         };
-        public Lexico(string nombre) // Constructor
+        public Lexico(string nombre = "prueba.cpp") // Constructor
         {
             linea = 1;
             log = new StreamWriter(Path.GetFileNameWithoutExtension(nombre) + ".log");
@@ -75,7 +75,6 @@ namespace Semantica
             }
             archivo = new StreamReader(nombre);
         }
-        public Lexico() : this(nombre:"prueba.cpp") {} // Constructor
         public void Dispose() // Destructor
         {
             archivo.Close();
@@ -250,7 +249,7 @@ namespace Semantica
                 }
                 else if (Clasificacion == Tipos.OpFactor)
                 {
-                    throw new Error(" Se espera un cierre de comentario\n " + buffer + ", " + linea, log);
+                    throw new Error(" Se espera un cierre de comentario " + buffer + ", " + linea, log);
                 }
             }
             Contenido = buffer;

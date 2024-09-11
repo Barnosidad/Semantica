@@ -489,8 +489,7 @@ namespace Semantica
         }
         private Variable traeVariable(string nombre)
         {
-            Variable? aux;
-            return aux = listaVariables.Find(x => x.Nombre == nombre) is null ? throw new Error("No existe esa variable en la linea " + linea, log) : listaVariables.Find(x => x.Nombre == nombre);
+            return listaVariables.Find(x => x.Nombre == nombre) is null ? throw new Error("No existe esa variable en la linea " + linea, log) : listaVariables.Find(x => x.Nombre == nombre);
         }
     }
 }
