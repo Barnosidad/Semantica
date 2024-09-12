@@ -51,7 +51,7 @@ namespace Semantica
             {F,F, 32, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}
 
         };
-        public Lexico(string nombre) // Constructor
+        public Lexico(string nombre = "prueba.cpp") // Constructor
         {
             linea = 1;
             log = new StreamWriter(Path.GetFileNameWithoutExtension(nombre) + ".log");
@@ -63,6 +63,7 @@ namespace Semantica
             log.WriteLine("Autor: Rosas Jimenez Zared Isaac");
             log.WriteLine("Fecha: " + DateTime.Now.Day + "/" + DateTime.Now.Month + "/" + DateTime.Now.Year);
             asm.WriteLine("; Autor: Gonzalez Hernandez Diego");
+            log.WriteLine("; Autor: Rosas Jimenez Zared Isaac");
 
             if (Path.GetExtension(nombre) != ".cpp")
             {
@@ -74,7 +75,6 @@ namespace Semantica
             }
             archivo = new StreamReader(nombre);
         }
-        public Lexico() : this(nombre:"prueba.cpp") {} // Constructor
         public void Dispose() // Destructor
         {
             archivo.Close();
@@ -221,7 +221,6 @@ namespace Semantica
             while (Estado >= 0)
             {
                 c = (char)archivo.Peek();
-
                 Estado = TRAND[Estado, Columna(c)];
                 Clasificar(Estado);
 
@@ -250,7 +249,7 @@ namespace Semantica
                 }
                 else if (Clasificacion == Tipos.OpFactor)
                 {
-                    throw new Error(" Se espera un cierre de comentario\n " + buffer + ", " + linea, log);
+                    throw new Error(" Se espera un cierre de comentario " + buffer + ", " + linea, log);
                 }
             }
             Contenido = buffer;
