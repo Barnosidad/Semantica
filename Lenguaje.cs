@@ -96,7 +96,7 @@ namespace Semantica
         {
             if(buscarVariable(Contenido))
             {
-                throw new Error("Variable repetida (" + Contenido + ") en la linea: " + linea, log);
+                throw new Error("Variable repetida (" + Contenido + ")", log,linea);
             }
             else
             {
