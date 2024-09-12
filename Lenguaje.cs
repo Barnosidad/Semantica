@@ -160,7 +160,7 @@ namespace Semantica
                 Asignacion();
             }
         }
-        private bool rangoTipos(float valor, Variable.TipoDato tipo, ref Variable.TipoDato limite)
+        private bool rangoTipos(float valor, Variable.TipoDato? tipo, ref Variable.TipoDato limite)
         {
             bool dentro;
             switch(tipo)
@@ -201,29 +201,30 @@ namespace Semantica
             string variable = Contenido;
             if(!buscarVariable(variable))
             {
-                throw new Error("Semantico, variable (" + Contenido + ") no delcarada previamente en la linea: " + linea, log);
+                throw new Error("Semantico, variable (" + Contenido + ") no delcarada previamente  ",log,linea);
             }
             else
             {
                 match(Tipos.Identificador);
                 string operacion = Contenido;
                 Variable.TipoDato objetivo = Variable.TipoDato.Float;
+                float valor = 0;
                 switch(Clasificacion)
                 {
                     case Tipos.Asignacion:
                         match(Tipos.Asignacion);
                         Expresion();
                         imprimeStack();
-                        traeVariable(variable).Valor = s.Pop();
+                        valor = s.Pop();
                     break;
                     case Tipos.IncTermino:
                         match(Tipos.IncTermino);
                         switch(operacion)
                         {
-                            case "++" : traeVariable(variable).Valor++; break;
-                            case "--" : traeVariable(variable).Valor--; break;
-                            case "+=" : Expresion(); traeVariable(variable).Valor+= s.Pop(); break;
-                            case "-=" : Expresion(); traeVariable(variable).Valor-= s.Pop(); break;
+                            case "++" : valor++; break;
+                            case "--" : valor--; break;
+                            case "+=" : Expresion(); valor+= s.Pop(); break;
+                            case "-=" : Expresion(); valor-= s.Pop(); break;
                         }
                     break;
                     case Tipos.IncFactor:
