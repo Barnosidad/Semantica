@@ -8,7 +8,7 @@ namespace Semantica
         ? 2. Cambiar la clase token por atributos publicos utilizando el Get y el Set
         ? 3. Cambiar los constructores de la clase lexico usando parametros por default
         ? Error semantico al tener valores diferentes
-        ? Busca y cambia valores de variables, castea o suelta errores
+        !Busca y cambia valores de variables, castea o suelta errores
         ? Buscar tipos de datos o si es posible la asignacion
         ? char => 0 a 255
         ? int => 0 a 65535
@@ -160,7 +160,7 @@ namespace Semantica
                 Asignacion();
             }
         }
-        private bool rangoTipos(float valor, Variable.TipoDato? tipo, ref Variable.TipoDato limite)
+        private bool rangoTipos(float valor, Variable.TipoDato tipo, ref Variable.TipoDato limite)
         {
             bool dentro;
             switch(tipo)
@@ -233,15 +233,15 @@ namespace Semantica
                         Expresion();
                         switch(operacion)
                         {
-                            case "*=" : traeVariable(variable).Valor*=s.Pop(); break;
-                            case "/=" : traeVariable(variable).Valor/=s.Pop(); break;
-                            case "%=" : traeVariable(variable).Valor%=s.Pop(); break;
+                            case "*=" : valor*=s.Pop(); break;
+                            case "/=" : valor/=s.Pop(); break;
+                            case "%=" : valor%=s.Pop(); break;
                         }
                     break;
                 }
-                if(!rangoTipos(traeVariable(variable).Valor, traeVariable(variable).Tipo, ref objetivo))
+                if(!rangoTipos(valor, traeVariable(variable).Tipo, ref objetivo))
                 {
-                    throw new Error("Semantico, no es posible un dato de tipo (" + objetivo + ")" + " a un dato de tipo (" + traeVariable(variable).Tipo + ") en la linea: " + linea, log);
+                    throw new Error("Semantico, no es posible un dato de tipo (" + objetivo + ")" + " a un dato de tipo (" + traeVariable(variable).Tipo + ")", log,linea);
                 }
                 match(Tipos.FinSentencia);
             }
@@ -490,7 +490,7 @@ namespace Semantica
         }
         private Variable traeVariable(string nombre)
         {
-            return listaVariables.Find(x => x.Nombre == nombre) is null ? throw new Error("No existe esa variable en la linea " + linea, log) : listaVariables.Find(x => x.Nombre == nombre);
+            return listaVariables.Find(x => x.Nombre == nombre) ?? throw new Error("No existe esa variable en la linea " + linea, log);
         }
     }
 }
