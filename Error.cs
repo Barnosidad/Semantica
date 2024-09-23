@@ -12,5 +12,9 @@ namespace Semantica
         {
             log.WriteLine("Error: " + mensaje);
         }
+        public Error(string mensaje, StreamWriter log,int linea) : base("Error: " + mensaje + " en la linea " + linea)
+        {
+            log.WriteLine("Error: " + mensaje + " en la linea " + linea);
+        }
     }
 }

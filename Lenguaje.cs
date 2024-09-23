@@ -8,8 +8,12 @@ namespace Semantica
         ? 2. Cambiar la clase token por atributos publicos utilizando el Get y el Set
         ? 3. Cambiar los constructores de la clase lexico usando parametros por default
         ? Error semantico al tener valores diferentes
-        ? Busca y cambia valores de variables, castea o suelta errores
+        !Busca y cambia valores de variables, castea o suelta errores
         ? Buscar tipos de datos o si es posible la asignacion
+        ? char => 0 a 255
+        ? int => 0 a 65535
+        ? float => 0 a deus
+        ? Anadir mas a expresion
     */
     public class Lenguaje : Sintaxis
     {
@@ -73,6 +77,7 @@ namespace Semantica
         public void ListaLibrerias()
         {
             match(Tipos.Identificador);
+
             if(Contenido == ".")
             {
                 match(".");
@@ -89,12 +94,19 @@ namespace Semantica
         // ListaIdentificadores -> identificador (,ListaIdentificadores)?
         private void Lista_Identificadores(Variable.TipoDato t)
         {
-            listaVariables.Add(new Variable(Contenido,t));
-            match(Tipos.Identificador);
-            if(Contenido == ",")
+            if(buscarVariable(Contenido))
             {
-                match(",");
-                Lista_Identificadores(t);
+                throw new Error("Variable repetida (" + Contenido + ")", log,linea);
+            }
+            else
+            {
+                listaVariables.Add(new Variable(Contenido,t));
+                match(Tipos.Identificador);
+                if(Contenido == ",")
+                {
+                    match(",");
+                    Lista_Identificadores(t);
+                }
             }
         }
         // BloqueInstrucciones -> { listaIntrucciones? }
@@ -148,16 +160,91 @@ namespace Semantica
                 Asignacion();
             }
         }
+        private bool rangoTipos(float valor, Variable.TipoDato tipo, ref Variable.TipoDato limite)
+        {
+            bool dentro;
+            switch(tipo)
+            {
+                case Variable.TipoDato.Char: 
+                if(Math.Abs(valor)<256) dentro = true;
+                else
+                {
+                    if(Math.Abs(valor) > 65535) limite = Variable.TipoDato.Float;
+                    else limite = Variable.TipoDato.Int;
+                    dentro = false;
+                }
+                break;
+                case Variable.TipoDato.Int:
+                    if(Math.Abs(valor)<65536) dentro = true;
+                    else
+                    {
+                        if(Math.Abs(valor) > 65535) limite = Variable.TipoDato.Float;
+                        dentro = false;
+                    }
+                    break;
+                default:
+                    dentro = true;
+                break;
+            }
+            return dentro;
+        }
         // Asignacion -> Identificador = Expresion;
+        //            -> Identificador ++; semanticamente, solo se anade
+        //            -> Identificador --; semanticamente, solo se resta
+        //            -> Identificador += Expresion;
+        //            -> Identificador -= Expresion; 
+        //            -> Identificador *= Expresion;
+        //            -> Identificador /= Expresion;
+        //            -> Identificador %= Expresion;
         private void Asignacion()
         {
             string variable = Contenido;
-            match(Tipos.Identificador);
-            match(Tipos.Asignacion);
-            Expresion();
-            match(Tipos.FinSentencia);
-            imprimeStack();
-            log.WriteLine(variable + " = " + s.Pop());
+            if(!buscarVariable(variable))
+            {
+                throw new Error("Semantico, variable (" + Contenido + ") no delcarada previamente  ",log,linea);
+            }
+            else
+            {
+                match(Tipos.Identificador);
+                string operacion = Contenido;
+                Variable.TipoDato objetivo = Variable.TipoDato.Float;
+                float valor = 0;
+                switch(Clasificacion)
+                {
+                    case Tipos.Asignacion:
+                        match(Tipos.Asignacion);
+                        Expresion();
+                        imprimeStack();
+                        valor = s.Pop();
+                    break;
+                    case Tipos.IncTermino:
+                        match(Tipos.IncTermino);
+                        switch(operacion)
+                        {
+                            case "++" : valor++; break;
+                            case "--" : valor--; break;
+                            case "+=" : Expresion(); valor+= s.Pop(); break;
+                            case "-=" : Expresion(); valor-= s.Pop(); break;
+                        }
+                    break;
+                    case Tipos.IncFactor:
+                        operacion = Contenido;
+                        match(Tipos.IncFactor);
+                        Expresion();
+                        switch(operacion)
+                        {
+                            case "*=" : valor*=s.Pop(); break;
+                            case "/=" : valor/=s.Pop(); break;
+                            case "%=" : valor%=s.Pop(); break;
+                        }
+                    break;
+                }
+                if(!rangoTipos(valor, traeVariable(variable).Tipo, ref objetivo))
+                {
+                    throw new Error("Semantico, no es posible un dato de tipo (" + objetivo + ")" + " a un dato de tipo (" + traeVariable(variable).Tipo + ")", log,linea);
+                }
+                match(Tipos.FinSentencia);
+            }
         }
         /* If -> if (Condicion) bloqueInstrucciones | instruccion
             (else bloqueInstrucciones | instruccion)?
@@ -395,6 +482,15 @@ namespace Semantica
                 Expresion();
                 match(")");
             }
+        }
+        // Buscar variable
+        private bool buscarVariable(string nombre)
+        {
+            return listaVariables.Exists(x => x.Nombre == nombre); 
+        }
+        private Variable traeVariable(string nombre)
+        {
+            return listaVariables.Find(x => x.Nombre == nombre) ?? throw new Error("No existe esa variable en la linea " + linea, log);
         }
     }
 }
