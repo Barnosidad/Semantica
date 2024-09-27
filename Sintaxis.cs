@@ -23,7 +23,7 @@ namespace Semantica
             }
             else
             {
-                throw new Error("Sintaxis: se espera un " + espera + ", " + linea, log);
+                throw new Error("Sintaxis: se espera un " + espera + " (" + Contenido + ")", log, linea);
             }
         }
         public void match(Tipos espera)
@@ -34,7 +34,7 @@ namespace Semantica
             }
             else
             {
-                throw new Error("Sintaxis: se espera un " + espera + ", " + linea, log);
+                throw new Error("Sintaxis: se espera un " + espera + " (" + Contenido + ")", log,linea);
             }
         }
     }
