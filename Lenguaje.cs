@@ -9,10 +9,10 @@ using Microsoft.VisualBasic;
 namespace Semantica
 {
     /*
-        ? 1. Colocar el numero de linea en errores lexicos y sintacticos
-        ? 2. Cambiar la clase token por atributos publicos utilizando el Get y el Set
-        ? 3. Cambiar los constructores de la clase lexico usando parametros por default
-        ? Error semantico al tener valores diferentes
+        Hecho:  1. Colocar el numero de linea en errores lexicos y sintacticos
+        Hecho:  2. Cambiar la clase token por atributos publicos utilizando el Get y el Set
+        Hecho:  3. Cambiar los constructores de la clase lexico usando parametros por default
+        Hecho:  Error semantico al tener valores diferentes
         ! Busca y cambia valores de variables, castea o suelta errores
         ? Buscar tipos de datos o si es posible la asignacion
         ? char => 0 a 255
@@ -20,21 +20,22 @@ namespace Semantica
         ? float => 0 a deus
         ? Anadir mas a expresion
         ! Parte dos la venganza
-        ? 1. Usar el metodo find en lugar de foreach
-        ? 2.  Validar que no existan las variables duplicadas
-        ? 3.  Validar que existan las variables en las expresiones matematicas
+        Hecho:  1. Usar el metodo find en lugar de foreach
+        Hecho:  2.  Validar que no existan las variables duplicadas
+        Hecho:  3.  Validar que existan las variables en las expresiones matematicas
             * en la asignacion pues
-        ? 4. 1.5 + 1.4 = 3 <- Float porque float + float = float
-        ? 5. Meter el valor de la variable al stack
-        6. Asignar una expresion matematica a la variable al momento de declararla
-        ? 7. Emular if
-        8. Emular read y read line, validar que en read line se capturen solo numeros e implementar una excepcion
-        ? 9. Emular el do
-        10. Emular el for -- vale 20 puntos
-        11. Emular el while -- vale 15 points
-        ? 12. Emular el write y write line
-        ? 13. Castear, quitar la parte alta del byte
-        ? 14. Desarrollar lista de concatenaciones, variables separadas por comas
+        Hecho:  4. 1.5 + 1.4 = 3 <- Float porque float + float = float
+        Hecho: Meter el valor de la variable al stack
+        Hecho: Asignar una expresion matematica a la variable al momento de declararla
+        Hecho: Emular if
+        Hecho: Emular read y read line, validar que en read line se capturen solo numeros e implementar una excepcion
+        Hecho: Emular el do
+        Hecho: Emular el for -- vale 20 puntos, a medias
+        Hecho: Emular el while -- vale 15 points, a medias
+        Hecho: Emular el write y write line
+        Hecho: Castear, quitar la parte alta del byte
+        Hecho: 14. Desarrollar lista de concatenaciones, variables separadas por comas
+        Trabajando: El for aumenta al final y compara al principio
     */
     public class Lenguaje : Sintaxis
     {
@@ -116,6 +117,7 @@ namespace Semantica
             }
         }
         // ListaIdentificadores -> identificador (,ListaIdentificadores)?
+        // ListaIdentificadores -> identificador (asignacion, listaIdentificadores | ,ListaIdentificadores)?, este reemplazaria al de arriba
         private void Lista_Identificadores(Variable.TipoDato t)
         {
             if(listaVariables.Exists(x => x.Nombre == Contenido))
@@ -125,8 +127,24 @@ namespace Semantica
             else
             {
                 listaVariables.Add(new Variable(Contenido,t));
+                string id_v = Contenido;
+                int cTemp = caracter - (Contenido.Length + 1), lTemp = linea;
                 match(Tipos.Identificador);
-                if(Contenido == ",")
+                if(Clasificacion == Tipos.Asignacion)
+                {
+                    caracter = cTemp;
+                    linea = lTemp;
+                    archivo.DiscardBufferedData();
+                    archivo.BaseStream.Seek(caracter, SeekOrigin.Begin);
+                    nextToken();
+                    Asignacion(true);
+                    if(Contenido == ",")
+                    {
+                        match(",");
+                        Lista_Identificadores(t);
+                    }
+                }
+                else if(Contenido == ",")
                 {
                     match(",");
                     Lista_Identificadores(t);
@@ -210,12 +228,12 @@ namespace Semantica
                     if (nuevoValor <= 65536) return true;
                     return false;
                 }
-                return false;
+                return true;
             }
             else
             {
                 if(v.Tipo == Variable.TipoDato.Char || v.Tipo == Variable.TipoDato.Int) return false;
-                return false;
+                return true;
             }
         }
         // Asignacion -> Identificador = Expresion;
@@ -230,77 +248,78 @@ namespace Semantica
         {
             string variable = Contenido;
             match(Tipos.Identificador);
-                string operacion = Contenido;
-                Variable v = listaVariables.Find(x => x.Nombre == variable) ?? throw new Error("Semantico, esa variable no existe", log,linea);
-                float nuevoValor = v.Valor;
-                
-                tipoDatoExpresion = Variable.TipoDato.Char;
-                
-                switch(Clasificacion)
-                {
-                    case Tipos.Asignacion:
-                        match(Tipos.Asignacion);
-                        if(Contenido == "Console")
+            string operacion = Contenido;
+            Variable v = listaVariables.Find(x => x.Nombre == variable) ?? throw new Error("Semantico, la variable de nombre (" + variable + ") no existe", log,linea);
+            float nuevoValor = v.Valor;
+            tipoDatoExpresion = Variable.TipoDato.Char;
+            switch(Clasificacion)
+            {
+                case Tipos.Asignacion:
+                    match(Tipos.Asignacion);
+                    if(Contenido == "Console")
+                    {
+                        string aux_s;
+                        char aux_c;
+                        match(Contenido);
+                        match(".");
+                        if(Contenido == "Read")
                         {
-                            match(Contenido);
-                            match(".");
-                            if(Contenido == "Read")
-                            {
-                                match("Read");
-                                match("(");
-                                nuevoValor = System.Console.Read();
-                                match(")");
-                                // Error de numero
-                            }
-                            else
-                            {
-                                match("ReadLine");
-                                match("(");
-                                nuevoValor = float.Parse(""+System.Console.ReadLine());
-                                match(")");
-                                // Error de numero
-                            }
+                            match("Read");
+                            match("(");
+                            aux_c = (char) System.Console.Read();
+                            if(!char.IsNumber(aux_c)) throw new Error("Semantico, por favor ingresa solo numeros en la cadena", log, linea);
+                            else nuevoValor = float.Parse(Char.ToString(aux_c));
+                            match(")");
                         }
                         else
                         {
-                            Expresion();
-                            nuevoValor = s.Pop();
+                            match("ReadLine");
+                            match("(");
+                            aux_s = System.Console.ReadLine() ?? throw new Error("Semantico, introduce algo para leer", log, linea);
+                            if(!aux_s.All(x => Char.IsNumber(x) || Char.IsPunctuation(x))) throw new Error("Semantico, por favor ingresa solo numeros en la cadena", log, linea);
+                            else nuevoValor = float.Parse(aux_s);
+                            match(")");
                         }
-                    break;
-                    case Tipos.IncTermino:
-                        match(Tipos.IncTermino);
-                        switch(operacion)
-                        {
-                            case "++" : nuevoValor++; break;
-                            case "--" : nuevoValor--; break;
-                            case "+=" : Expresion(); nuevoValor += s.Pop(); break;
-                            case "-=" : Expresion(); nuevoValor -= s.Pop(); break;
-                        }
-                    break;
-                    case Tipos.IncFactor:
-                        operacion = Contenido;
-                        match(Tipos.IncFactor);
+                    }
+                    else
+                    {
                         Expresion();
-                        switch(operacion)
-                        {
-                            case "*=" : nuevoValor *=s.Pop(); break;
-                            case "/=" : nuevoValor /=s.Pop(); break;
-                            case "%=" : nuevoValor %=s.Pop(); break;
-                        }
-                    break;
-                }
+                        nuevoValor = s.Pop();
+                    }
+                break;
+                case Tipos.IncTermino:
+                    match(Tipos.IncTermino);
+                    switch(operacion)
+                    {
+                        case "++" : nuevoValor++; break;
+                        case "--" : nuevoValor--; break;
+                        case "+=" : Expresion(); nuevoValor += s.Pop(); break;
+                        case "-=" : Expresion(); nuevoValor -= s.Pop(); break;
+                    }
+                break;
+                case Tipos.IncFactor:
+                    operacion = Contenido;
+                    match(Tipos.IncFactor);
+                    Expresion();
+                    switch(operacion)
+                    {
+                        case "*=" : nuevoValor *=s.Pop(); break;
+                        case "/=" : nuevoValor /=s.Pop(); break;
+                        case "%=" : nuevoValor %=s.Pop(); break;
+                    }
+                break;
+            }
             // match(Tipos.FinSentencia);
+            if(tipoDatoExpresion < valorToTipo(nuevoValor)) tipoDatoExpresion = valorToTipo(nuevoValor);
             if(analisisSemantico(v,nuevoValor))
             {
                 if(ejecutar) v.Valor = nuevoValor;
             }
             else
             {
-                // tipo dato expresion = ja ja ja ja ja
                 throw new Error("Semantico, no puedo asignar un (" + tipoDatoExpresion + ") a un tipo (" + v.Tipo + ")", log, linea);
             }
-            log.WriteLine(variable + " = " + nuevoValor);
-            // System.Console.WriteLine(tipoDatoExpresion);
+            log.WriteLine("El nuevo valor de " + v.Nombre + ", es: " + v.Valor);
         }
         /* If -> if (Condicion) bloqueInstrucciones | instruccion
             (else bloqueInstrucciones | instruccion)?
@@ -360,18 +379,31 @@ namespace Semantica
         // While -> while(Condicion) bloqueInstrucciones | instruccion
         private void While(bool ejecutar)
         {
-            match("while");
-            match("(");
-            Condicion();
-            match(")");
-            if(Clasificacion == Tipos.Inicio)
+            int cTemp = caracter - 6, lTemp = linea;
+            bool resultado = false;
+            do
             {
-                BloqueInstrucciones(ejecutar);
-            }
-            else
-            {
-                Instruccion(ejecutar);
-            }
+                match("while");
+                match("(");
+                resultado = Condicion() && ejecutar;
+                match(")");
+                if(Clasificacion == Tipos.Inicio)
+                {
+                    BloqueInstrucciones(ejecutar && resultado);
+                }
+                else
+                {
+                    Instruccion(ejecutar && resultado);
+                }
+                if(resultado)
+                { 
+                    caracter = cTemp;
+                    linea = lTemp;
+                    archivo.DiscardBufferedData();
+                    archivo.BaseStream.Seek(caracter, SeekOrigin.Begin);
+                    nextToken();
+                }
+            }while(resultado);
         }
         /* Do -> do 
                 bloqueInstrucciones | intruccion 
@@ -386,11 +418,11 @@ namespace Semantica
                 match("do");
                 if(Clasificacion == Tipos.Inicio)
                 {
-                    BloqueInstrucciones(ejecutar);
+                    BloqueInstrucciones(ejecutar & resultado);
                 }
                 else
                 {
-                    Instruccion(ejecutar);
+                    Instruccion(ejecutar && resultado);
                 }
                 match("while");
                 match("(");
@@ -414,20 +446,54 @@ namespace Semantica
         {
             match("for");
             match("(");
-            Asignacion(ejecutar);
-            match(Tipos.FinSentencia);
-            Condicion();
-            match(Tipos.FinSentencia);
-            Asignacion(ejecutar);
-            match(")");
-            if(Clasificacion == Tipos.Inicio)
+            if(Clasificacion == Tipos.TipoDato) Variables();
+            else if(Clasificacion == Tipos.Identificador)
             {
-                BloqueInstrucciones(ejecutar);
+                Asignacion(ejecutar);
+                match(Tipos.FinSentencia);
             }
-            else
+            // ! esto seria la condicion
+            int cTemp = caracter, lTemp = linea, cTemp_AI, cTemp_AF;
+            bool resultado = false;
+            do
             {
-                Instruccion(ejecutar);
-            }
+                resultado = Condicion() && ejecutar;
+                match(Tipos.FinSentencia);
+                // ! la solucion no seria condicionar al principio, sino directamente moverlo
+                cTemp_AI = caracter;
+                Asignacion(false);
+                cTemp_AF = caracter;
+                match(")");
+                if(Clasificacion == Tipos.Inicio)
+                {
+                    BloqueInstrucciones(ejecutar && resultado);
+                }
+                else
+                {
+                    Instruccion(ejecutar && resultado);
+                }
+                // ! Aqui se haria el aumento del for, la comprobacion queda donde mismo
+                if(resultado)
+                {
+                    caracter = cTemp_AI - 1;
+                    archivo.DiscardBufferedData();
+                    archivo.BaseStream.Seek(caracter, SeekOrigin.Begin);
+                    nextToken();
+                    // ! realizar la lectura solo de la parte que quiero
+                    while(caracter < cTemp_AF)
+                    {
+                        Asignacion(resultado && ejecutar);
+                    }
+                }
+                if(resultado)
+                { 
+                    caracter = cTemp - 1;
+                    linea = lTemp;
+                    archivo.DiscardBufferedData();
+                    archivo.BaseStream.Seek(caracter, SeekOrigin.Begin);
+                    nextToken();
+                }
+            }while(resultado);
         }
         /* Console -> Console.(WriteLine|Write) (cadena?);
         */
@@ -439,28 +505,29 @@ namespace Semantica
             if(Contenido == "WriteLine")
             {
                 match(Contenido);
-                nueva_linea="\n";
+                nueva_linea = "\n";
             }
             else
             {
                 match(Contenido);
-                nueva_linea="";
+                nueva_linea = "";
             }
             match("(");
             if(Clasificacion == Tipos.Cadena)
             {
-               if(ejecutar) System.Console.Write(Contenido.Replace('"',' ').TrimEnd().TrimStart());
+                if(ejecutar) System.Console.Write(Contenido.Replace('"',' ').TrimEnd().TrimStart());
                 match(Tipos.Cadena);
                 if(Contenido == "+")
                 {
                     string concatenacion = listaDeConcatenacion();
-                    if(ejecutar) System.Console.WriteLine(concatenacion);
+                    if(ejecutar) System.Console.Write(concatenacion);
                 }
-                else if(ejecutar) System.Console.WriteLine();
+                else if(ejecutar) System.Console.Write(nueva_linea);
             }
             match(")");
             match(Tipos.FinSentencia);
         }
+        // listaDeConcatenacion -> + (variable|cadena) +?
         private string listaDeConcatenacion()
         {
             string c = "";
