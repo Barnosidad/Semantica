@@ -8,10 +8,10 @@ namespace Semantica
 {
     public class Lexico : Token, IDisposable
     {
-        private StreamReader archivo;
+        protected StreamReader archivo;
         public StreamWriter log;
         protected StreamWriter asm;
-        protected int linea;
+        protected int linea, caracter;
         const int F = -1;
         const int E = -2;
         int[,] TRAND =
@@ -51,9 +51,9 @@ namespace Semantica
             {F,F, 32, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}
 
         };
-        public Lexico(string nombre = "prueba.cpp") // Constructor
+        public Lexico(string nombre = "suma.cpp") // Constructor
         {
-            linea = 1;
+            linea = caracter = 1;
             log = new StreamWriter(Path.GetFileNameWithoutExtension(nombre) + ".log");
             log.AutoFlush = true;
             asm = new StreamWriter(Path.GetFileNameWithoutExtension(nombre) + ".asm");
@@ -62,8 +62,10 @@ namespace Semantica
             log.WriteLine("Autor: Gonzalez Hernandez Diego");
             log.WriteLine("Autor: Rosas Jimenez Zared Isaac");
             log.WriteLine("Fecha: " + DateTime.Now.Day + "/" + DateTime.Now.Month + "/" + DateTime.Now.Year);
+            asm.WriteLine("; Analizador Lexico");
             asm.WriteLine("; Autor: Gonzalez Hernandez Diego");
-            log.WriteLine("; Autor: Rosas Jimenez Zared Isaac");
+            asm.WriteLine("; Autor: Rosas Jimenez Zared Isaac");
+            asm.WriteLine("; Fecha: " + DateTime.Now.Day + "/" + DateTime.Now.Month + "/" + DateTime.Now.Year);
 
             if (Path.GetExtension(nombre) != ".cpp")
             {
@@ -89,7 +91,6 @@ namespace Semantica
             }
             else if (c == '\n')
             {
-                linea++;
                 return 23;
             }
             else if (char.IsWhiteSpace(c))
@@ -223,7 +224,6 @@ namespace Semantica
                 c = (char)archivo.Peek();
                 Estado = TRAND[Estado, Columna(c)];
                 Clasificar(Estado);
-
                 if (Estado >= 0)
                 {
                     if (Estado == 0)
@@ -234,6 +234,11 @@ namespace Semantica
                     {
                         buffer += c;
                     }
+                    if(c == '\n')
+                    {
+                        linea++;
+                    }
+                    caracter++;
                     archivo.Read();
                 }
             }
