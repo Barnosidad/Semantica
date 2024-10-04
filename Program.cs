@@ -13,19 +13,6 @@ namespace Semantica
             {
                 using (Lenguaje L = new Lenguaje())
                 {
-                    
-                    int i,j;
-                    for (i = 1; i <= 5; i++)
-                    {
-                        for (j = 1; j <= i; j++)
-                        {
-                            if (j % 2 == 0)
-                                Console.Write("*");
-                            else
-                                Console.Write("-");
-                        }
-                        Console.WriteLine("");
-                    }
                     L.Programa();
                 }
             }

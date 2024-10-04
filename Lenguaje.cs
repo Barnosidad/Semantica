@@ -249,7 +249,7 @@ namespace Semantica
             string variable = Contenido;
             match(Tipos.Identificador);
             string operacion = Contenido;
-            Variable v = listaVariables.Find(x => x.Nombre == variable) ?? throw new Error("Semantico, la variable de nombre (" + variable + ") no existe", log,linea);
+            Variable v = TraeVariable(variable);
             float nuevoValor = v.Valor;
             tipoDatoExpresion = Variable.TipoDato.Char;
             switch(Clasificacion)
@@ -534,13 +534,13 @@ namespace Semantica
             match("+");
             if(Clasificacion == Tipos.Identificador)
             {
-                Variable v = listaVariables.Find(x => x.Nombre == Contenido) ?? throw new Error("Semantico, esa variable no existe", log,linea);
+                Variable v = TraeVariable(Contenido);
                 match(Tipos.Identificador);
                 c += v.Valor;
             }
             else if(Clasificacion == Tipos.Cadena)
             {
-                c += Contenido.Replace('"',' ');
+                c += Contenido.Replace('"',' ').TrimEnd().TrimStart();
                 match(Tipos.Cadena);
             }
             if(Contenido == "+")
@@ -619,6 +619,7 @@ namespace Semantica
             }
             log.WriteLine();
         }
+        
         // Factor -> numero | identificador | (Expresion)
         private void Factor()
         {
@@ -631,7 +632,7 @@ namespace Semantica
             else if(Clasificacion == Tipos.Identificador)
             {
                 // S.variable al stack
-                Variable v = listaVariables.Find(x => x.Nombre == Contenido) ?? throw new Error("No existe esa variable en la linea" + linea, log);
+                Variable v = TraeVariable(Contenido);
                 if(tipoDatoExpresion < v.Tipo) tipoDatoExpresion = v.Tipo;
                 s.Push(v.Valor);
                 match(Tipos.Identificador);
@@ -670,6 +671,11 @@ namespace Semantica
                     s.Push(valor);
                 }
             }
+        }
+        private Variable TraeVariable(string variable)
+        {
+            Variable v = listaVariables.Find(x => x.Nombre == variable) ?? throw new Error("No existe la variable (" + variable + ")" , log, linea);
+            return v;
         }
     }
 }
